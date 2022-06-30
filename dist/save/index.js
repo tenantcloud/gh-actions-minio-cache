@@ -46624,6 +46624,7 @@ saveCache();
 
 "use strict";
 
+/** @format */
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     var desc = Object.getOwnPropertyDescriptor(m, k);
@@ -46738,21 +46739,21 @@ function findObject(mc, bucket, key, compressionMethod) {
 exports.findObject = findObject;
 function listObjects(mc, bucket) {
     return new Promise((resolve, reject) => {
-        console.log(`Try find objects in bucket ${bucket}`);
+        core.info(`Try find objects in bucket ${bucket}`);
         const buckets = mc.listObjectsV2(bucket, undefined, true);
         const findedItems = [];
         let resolved = false;
         buckets.on("data", (obj) => {
-            console.debug(`Buckets data ${JSON.stringify(obj)}`);
+            core.debug(`Buckets data ${JSON.stringify(obj)}`);
             findedItems.push(obj);
         });
         buckets.on("error", (e) => {
-            console.error(`Buckets error ${JSON.stringify(e)}`);
+            core.error(`Buckets error ${JSON.stringify(e)}`);
             resolved = true;
             reject(e);
         });
         buckets.on("end", () => {
-            console.debug(`Buckets end: ${findedItems}`);
+            core.debug(`Buckets end: ${findedItems}`);
             resolved = true;
             resolve(findedItems);
         });

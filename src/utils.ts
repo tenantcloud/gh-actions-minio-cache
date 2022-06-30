@@ -1,3 +1,5 @@
+/** @format */
+
 import * as utils from "@actions/cache/lib/internal/cacheUtils";
 import { CompressionMethod } from "@actions/cache/lib/internal/constants";
 import * as core from "@actions/core";
@@ -101,21 +103,21 @@ export function listObjects(
   bucket: string,
 ): Promise<minio.BucketItem[]> {
   return new Promise((resolve, reject) => {
-    console.log(`Try find objects in bucket ${bucket}`);
+    core.info(`Try find objects in bucket ${bucket}`);
     const buckets = mc.listObjectsV2(bucket, undefined, true);
     const findedItems: minio.BucketItem[] = [];
     let resolved = false;
     buckets.on("data", (obj) => {
-      console.debug(`Buckets data ${JSON.stringify(obj)}`);
+      core.debug(`Buckets data ${JSON.stringify(obj)}`);
       findedItems.push(obj);
     });
     buckets.on("error", (e) => {
-      console.error(`Buckets error ${JSON.stringify(e)}`);
+      core.error(`Buckets error ${JSON.stringify(e)}`);
       resolved = true;
       reject(e);
     });
     buckets.on("end", () => {
-      console.debug(`Buckets end: ${findedItems}`);
+      core.debug(`Buckets end: ${findedItems}`);
       resolved = true;
       resolve(findedItems);
     });
