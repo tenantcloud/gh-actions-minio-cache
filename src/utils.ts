@@ -15,14 +15,14 @@ export function newMinio() {
 
 export function getInputAsBoolean(
   name: string,
-  options?: core.InputOptions
+  options?: core.InputOptions,
 ): boolean {
   return core.getInput(name, options) === "true";
 }
 
 export function getInputAsArray(
   name: string,
-  options?: core.InputOptions
+  options?: core.InputOptions,
 ): string[] {
   return core
     .getInput(name, options)
@@ -33,7 +33,7 @@ export function getInputAsArray(
 
 export function getInputAsInt(
   name: string,
-  options?: core.InputOptions
+  options?: core.InputOptions,
 ): number | undefined {
   const value = parseInt(core.getInput(name, options));
   if (isNaN(value) || value < 0) {
@@ -44,9 +44,9 @@ export function getInputAsInt(
 
 export function formatSize(value?: number, format = "bi") {
   if (!value) return "";
-  const [multiple, k, suffix] = (format === "bi"
-    ? [1000, "k", "B"]
-    : [1024, "K", "iB"]) as [number, string, string];
+  const [multiple, k, suffix] = (
+    format === "bi" ? [1000, "k", "B"] : [1024, "K", "iB"]
+  ) as [number, string, string];
   const exp = (Math.log(value) / Math.log(multiple)) | 0;
   const size = Number((value / Math.pow(multiple, exp)).toFixed(2));
   return (
@@ -58,39 +58,39 @@ export function formatSize(value?: number, format = "bi") {
 export function setCacheHitOutput(key: string, isCacheHit: boolean): void {
   core.setOutput("cache-hit", isCacheHit.toString());
   if (isCacheHit) {
-    core.saveState(`cache-hit-${key}`, isCacheHit)
+    core.saveState(`cache-hit-${key}`, isCacheHit);
   }
 }
 
 export function getCacheHitOutput(key: string): boolean {
-  const state = core.getState(`cache-hit-${key}`)
-  core.info(`state for key ${key} = ${state}`)
-  return !!(state === "true")
+  const state = core.getState(`cache-hit-${key}`);
+  core.debug(`state for key ${key} = ${state}`);
+  return !!(state === "true");
 }
 
 export async function findObject(
   mc: minio.Client,
   bucket: string,
   key: string,
-  compressionMethod: CompressionMethod
+  compressionMethod: CompressionMethod,
 ): Promise<minio.BucketItem> {
   core.info(`Try find object with prefix: ${key}`);
   const cacheFileName = utils.getCacheFileName(compressionMethod);
   let objects = await listObjects(mc, bucket);
-  core.info(`fn ${cacheFileName}`)
-  core.info(`Objects, ${JSON.stringify(objects, null, '  ')}`)
+  core.debug(`fn ${cacheFileName}`);
+  core.debug(`Objects, ${JSON.stringify(objects, null, "  ")}`);
   objects = objects.filter((o) => {
-    const isIncludes = o.name.includes(key)
-    core.info(`objects.filter ${o.name} includes ${key} ? = ${isIncludes}`)
-    return isIncludes
+    const isIncludes = o.name.includes(key);
+    core.debug(`objects.filter ${o.name} includes ${key} ? = ${isIncludes}`);
+    return isIncludes;
   });
   core.info(`Found ${JSON.stringify(objects, null, 2)}`);
   const sorted = objects.sort(
-    (a, b) => b.lastModified.getTime() - a.lastModified.getTime()
+    (a, b) => b.lastModified.getTime() - a.lastModified.getTime(),
   );
-  if (sorted.length > 0){
+  if (sorted.length > 0) {
     core.info(`Using latest ${JSON.stringify(sorted[0])}`);
-    return sorted[0]
+    return sorted[0];
   }
 
   throw new Error("Cache item not found");
@@ -101,21 +101,21 @@ export function listObjects(
   bucket: string,
 ): Promise<minio.BucketItem[]> {
   return new Promise((resolve, reject) => {
-    console.log(`Try find objects in bucket ${bucket}`)
+    console.log(`Try find objects in bucket ${bucket}`);
     const buckets = mc.listObjectsV2(bucket, undefined, true);
     const findedItems: minio.BucketItem[] = [];
     let resolved = false;
     buckets.on("data", (obj) => {
-      console.log(`Buckets data ${JSON.stringify(obj)}`)
+      console.debug(`Buckets data ${JSON.stringify(obj)}`);
       findedItems.push(obj);
     });
     buckets.on("error", (e) => {
-      console.log(`Buckets error ${JSON.stringify(e)}`)
+      console.error(`Buckets error ${JSON.stringify(e)}`);
       resolved = true;
       reject(e);
     });
     buckets.on("end", () => {
-      console.log(`Buckets end: ${findedItems}`)
+      console.debug(`Buckets end: ${findedItems}`);
       resolved = true;
       resolve(findedItems);
     });

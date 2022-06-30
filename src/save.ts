@@ -1,9 +1,16 @@
+/** @format */
+
 import * as cache from "@actions/cache";
 import * as utils from "@actions/cache/lib/internal/cacheUtils";
 import { createTar, listTar } from "@actions/cache/lib/internal/tar";
 import * as core from "@actions/core";
 import * as path from "path";
-import { getCacheHitOutput, getInputAsArray, getInputAsBoolean, newMinio } from "./utils";
+import {
+  getCacheHitOutput,
+  getInputAsArray,
+  getInputAsBoolean,
+  newMinio,
+} from "./utils";
 
 process.on("uncaughtException", (e) => core.info("warning: " + e.message));
 
@@ -18,15 +25,15 @@ async function saveCache() {
       bucket = ${bucket}
       key = ${key}
       paths = ${paths}
-    `)
+    `);
 
-    const isCacheHit = getCacheHitOutput(key)
-    core.info(`isCacheHit ${isCacheHit}`)
+    const isCacheHit = getCacheHitOutput(key);
+    core.info(`isCacheHit ${isCacheHit}`);
     if (isCacheHit) {
-      core.info(`Found cache hit for key ${key}, ignore uploading`)
+      core.info(`Found cache hit for key ${key}, ignore uploading`);
       // TODO: return
     } else {
-      core.info(`Cache not found for key ${key}, start uploading`)
+      core.info(`Cache not found for key ${key}, start uploading`);
     }
     // if (isCacheHit) {
     //   core.info(`Found cache hit for key ${key}, ignore uploading`)
@@ -37,7 +44,7 @@ async function saveCache() {
       const mc = newMinio();
 
       const compressionMethod = await utils.getCompressionMethod();
-      core.info(`Compression method ${compressionMethod}`)
+      core.info(`Compression method ${compressionMethod}`);
       const cachePaths = await utils.resolvePaths(paths);
       core.info(`Cache Paths: ${JSON.stringify(cachePaths)}`);
 
@@ -60,10 +67,10 @@ async function saveCache() {
       core.info(`Uploading tar to s3. Bucket: ${bucket}, Object: ${object}`);
       await mc.fPutObject(bucket, object, archivePath, {});
       core.info("Cache saved to s3 successfully");
-    } catch (e) {
+    } catch (e: any) {
       core.info("Save s3 cache failed: " + e.message);
     }
-  } catch (e) {
+  } catch (e: any) {
     core.info("warning: " + e.message);
   }
 }
