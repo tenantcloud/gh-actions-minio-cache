@@ -1,4 +1,6 @@
-name: test
+# @format
+
+name: master
 
 on:
   push:
@@ -11,7 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          fetch-depth: '0'
+          fetch-depth: "0"
 
       - name: Restore yarn cache
         id: cache
@@ -35,4 +37,3 @@ jobs:
 
       - name: Check that dependency installed
         run: yarn ts-jest -v
-
