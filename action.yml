@@ -1,5 +1,5 @@
-name: "Minio cache (AWS S3)"
-author: whalemare
+name: "Minio cache"
+author: proxyqb
 description: "S3 actions cache with actions/cache@v2 passthrough"
 inputs:
   endpoint:
@@ -30,10 +30,10 @@ inputs:
 
 outputs:
   cache-hit:
-    description: 'A boolean value to indicate an exact match was found for the primary key'
+    description: "A boolean value to indicate an exact match was found for the primary key"
 
 runs:
-  using: node12
+  using: node16
   main: "dist/restore/index.js"
   post: "dist/save/index.js"
   post-if: "success()"
