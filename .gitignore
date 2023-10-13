@@ -93,5 +93,6 @@ typings/
 .dynamodb/
 
 # Text editor files
+.idea
 .vscode/
 src/test.ts
