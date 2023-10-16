@@ -82,14 +82,16 @@ export async function findObject(
   core.debug(`fn ${cacheFileName}`);
   core.debug(`Objects, ${JSON.stringify(objects, null, "  ")}`);
   objects = objects.filter((o) => {
-    const isIncludes = o.name.includes(key);
+    const isIncludes = o.name?.includes(key);
     core.debug(`objects.filter ${o.name} includes ${key} ? = ${isIncludes}`);
     return isIncludes;
   });
   core.info(`Found ${JSON.stringify(objects, null, 2)}`);
-  const sorted = objects.sort(
-    (a, b) => b.lastModified.getTime() - a.lastModified.getTime(),
-  );
+  const sorted = objects.sort((a, b) => {
+    const aTimestamp = a.lastModified?.getTime() ?? 0;
+    const bTimestamp = b.lastModified?.getTime() ?? 0;
+    return bTimestamp - aTimestamp;
+  });
   if (sorted.length > 0) {
     core.info(`Using latest ${JSON.stringify(sorted[0])}`);
     return sorted[0];

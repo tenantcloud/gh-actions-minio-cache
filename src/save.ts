@@ -1,15 +1,10 @@
 /** @format */
 
-import * as cache from "@actions/cache";
 import * as utils from "@actions/cache/lib/internal/cacheUtils";
 import { createTar, listTar } from "@actions/cache/lib/internal/tar";
 import * as core from "@actions/core";
 import * as path from "path";
-import {
-  getCacheHitOutput,
-  getInputAsArray,
-  newMinio,
-} from "./utils";
+import { getCacheHitOutput, getInputAsArray, newMinio } from "./utils";
 
 process.on("uncaughtException", (e) => core.info("warning: " + e.message));
 

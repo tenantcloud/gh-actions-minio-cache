@@ -1,6 +1,5 @@
 /** @format */
 
-import * as cache from "@actions/cache";
 import * as utils from "@actions/cache/lib/internal/cacheUtils";
 import { extractTar, listTar } from "@actions/cache/lib/internal/tar";
 import * as core from "@actions/core";
@@ -27,6 +26,12 @@ async function restoreCache() {
       core.debug(`archivePath: ${archivePath}`);
 
       const obj = await findObject(mc, bucket, key, compressionMethod);
+
+      if (!obj.name) {
+        core.warning(`Can't find ${key} in bucket ${bucket}`);
+        return;
+      }
+
       core.info(`found cache object ${obj.name}`);
       core.info(
         `Downloading cache from s3 to ${archivePath}. bucket: ${bucket}, object: ${obj.name}`,
