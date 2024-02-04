@@ -9,7 +9,7 @@ on:
 
 jobs:
   ezcache:
-    runs-on: pipeline
+    runs-on: pipeline_server5
     container:
       image: node:20
     steps:
