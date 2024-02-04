@@ -11,7 +11,7 @@ defaults:
 
 jobs:
   build:
-    runs-on: pipeline
+    runs-on: [self-hosted]
     container:
       image: node:20
     steps:
